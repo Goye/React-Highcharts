@@ -145,12 +145,14 @@ module.exports = {
         new CaseSensitivePathsPlugin(),
         new NyanProgressPlugin({
             nyanCatSays: function(progress, messages) {
-                if (progress >= 0.1) {
-                     return 'Starting!';
-                } else if (progress >= 0.6) {
+                if (progress >= 0.9) {
+                     return 'Yeah!';
+                }
+                if (progress >= 0.3) {
                     return 'Getting there';
-                } else if (progress >= 0.9) {
-                    return 'Nyan! Motherfoca!!';
+                }
+                if (progress >= 0.1) {
+                    return 'Nyan!';
                 }
             }
         })
