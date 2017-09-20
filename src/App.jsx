@@ -9,7 +9,22 @@ class App extends Component {
     componentDidMount() {
         Highcharts.chart('container', {
             chart: {
-                type: 'pie'
+                type: 'pie',
+                events: {
+                    drilldown(e) {
+                        if (!e.seriesOptions) {
+                            // Show the loading label
+                            const chart = this;
+                            chart.showLoading("Loading ...");
+
+                            const key = e.point.name;
+                            App.fetchData(key).then(function(series) {
+                                chart.hideLoading();
+                                chart.addSeriesAsDrilldown(e.point, series);
+                            });
+                        }
+                    }
+                }
             },
             title: {
                 text: 'Async drilldown'
@@ -27,22 +42,7 @@ class App extends Component {
             },
             tooltip: {
                 headerFormat: '<span style="font-size:11px">{series.name}</span><br>',
-                pointFormat: '<span style="color:{point.color}">{point.name}</span>: <b>{point.y:.2f}%</b> of total<br/>'
-            },
-            events: {
-                drilldown(e) {
-                    if (!e.seriesOptions) {
-                        // Show the loading label
-                        const chart = this;
-                        chart.showLoading("Loading ...");
-
-                        const key = e.point.name;
-                        this.fetchData(key).then(function(series) {
-                            chart.hideLoading();
-                            chart.addSeriesAsDrilldown(e.point, series);
-                        });
-                    }
-                }
+                pointFormat: '<span style="color:{point.color}">{point.name}</span>: <b>{point.y}%</b> of total<br/>'
             },
             series: [{
                 name: 'Companies',
@@ -71,16 +71,16 @@ class App extends Component {
         });
     }
 
-    async fetchData (dataKey) {
+    static async fetchData (dataKey) {
         const response = await fetch(`http://localhost:3000/data/${dataKey}`);
         const data = await response.json();
-        console.log('data=', data);
         return data;
     }
 
     render() {
         return (
             <div className="App">
+                <h4>Demo</h4>
                 <div id="container" style={{minWidth: 310, maxWidth: 600, height: 400, margin: '0 auto'}}>
                 </div>
             </div>
