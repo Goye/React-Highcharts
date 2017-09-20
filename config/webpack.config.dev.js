@@ -1,4 +1,4 @@
-'use strict';
+
 
 const autoprefixer = require('autoprefixer');
 const fs = require('fs');
@@ -8,9 +8,9 @@ const HtmlWebpackPlugin = require('html-webpack-plugin');
 const ModuleScopePlugin = require('react-dev-utils/ModuleScopePlugin');
 const InterpolateHtmlPlugin = require('react-dev-utils/InterpolateHtmlPlugin');
 const CaseSensitivePathsPlugin = require('case-sensitive-paths-webpack-plugin');
-const srcPath = path.join(__dirname, '../src');
 const paths = require('./paths');
 const eslintFormatter = require('react-dev-utils/eslintFormatter');
+var NyanProgressPlugin = require('nyan-progress-webpack-plugin');
 const publicPath = '/';
 const publicUrl = '';
 
@@ -142,6 +142,19 @@ module.exports = {
             template: paths.appHtml,
         }),
         new webpack.HotModuleReplacementPlugin(),
-        new CaseSensitivePathsPlugin()
+        new CaseSensitivePathsPlugin(),
+        new NyanProgressPlugin({
+            nyanCatSays: function(progress, messages) {
+                if (progress >= 0.9) {
+                     return 'Yeah!';
+                }
+                if (progress >= 0.3) {
+                    return 'Getting there';
+                }
+                if (progress >= 0.1) {
+                    return 'Nyan!';
+                }
+            }
+        })
     ]
 };
